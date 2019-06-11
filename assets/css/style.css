@@ -1,0 +1,31 @@
+
+.schedule-container {
+    min-width: 800px;
+}
+
+.input-container {
+    min-width: 800px;
+}
+
+body {
+       background: url("https://images.designtrends.com/wp-content/uploads/2016/02/23104259/Green-Weather-Train-Wallpaper.jpg") no-repeat center center fixed;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+  }
+
+table {
+    border-collapse: separate;
+    border-spacing: 6px;
+}
+
+.jumbotron {
+    color: white;
+    background-color: black;
+    min-width: 800px;
+}
+
+#name,#destination,#first-train,#frequency{
+    color: white;
+}
