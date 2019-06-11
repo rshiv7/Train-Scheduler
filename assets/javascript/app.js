@@ -9,98 +9,85 @@ var firebaseConfig = {
     storageBucket: "train-scheduler-95f65.appspot.com",
     messagingSenderId: "866918494606",
     appId: "1:866918494606:web:d6d5b649017b6eb0"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 var dataRef = firebase.database();
 
 
 
-var name ='';
+var name = '';
 var destination = '';
-var firstTrainTime = '';
+var firstTrainTime = '12:00';
 var frequency = '';
-var nextTrain = '';
-var nextTrainFormatted = '';
-var minutesAway = '';
-var firstTimeConverted = '';
-var currentTime = '';
-var diffTime = '';
-var tRemainder = '';
-var minutesTillTrain = '';
-var keyHolder = '';
-var getKey = '';
 
 
 
+$("#add-train").on("click", function () {
+    event.preventDefault();
 
-$(document).ready(function() {
 
-     $("#add-train").on("click", function() {
-        event.preventDefault();
-     	
-     	
-     	name = $('#name-input').val().trim();
-     	destination = $('#destination-input').val().trim();
-     	firstTrainTime = $('#first-train-time-input').val().trim();
-     	frequency = $('#frequency-input').val().trim();
-          firstTimeConverted = moment(firstTrainTime, "hh:mm").subtract(1, "years");
-          currentTime = moment();
-          diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-          tRemainder = diffTime % frequency;
-          minutesTillTrain = frequency - tRemainder;
-          nextTrain = moment().add(minutesTillTrain, "minutes");
-          nextTrainFormatted = moment(nextTrain).format("hh:mm");
+    name = $('#name-input').val().trim();
+    destination = $('#destination-input').val().trim();
+    firstTrainTime = $('#first-train-time-input').val().trim();
+    frequency = $('#frequency-input').val().trim();
 
-     	// Code for the push
-     	dataRef.ref().push({
-     		name: name,
-     		destination: destination,
-     		firstTrainTime: firstTrainTime,  
-     		frequency: frequency,
-               nextTrainFormatted: nextTrainFormatted,
-               minutesTillTrain: minutesTillTrain
-     	});
-          
 
-          $('#name-input').val('');
-     	$('#destination-input').val('');
-     	$('#first-train-time-input').val('');
-     	$('#frequency-input').val('');
+    // Code for the push
+    dataRef.ref("traintime").push({
+        name: name,
+        destination: destination,
+        firstTrainTime: firstTrainTime,
+        frequency: frequency,
 
-     	return false;
-     });
-          
+    });
 
-// I don't know where I'm messing up. It is not recording in my firebase database.
+
+    $('#name-input').val('');
+    $('#destination-input').val('');
+    $('#first-train-time-input').val('');
+    $('#frequency-input').val('');
+
+
+});
+
+
+// I don't know where I'm messing up. It  recording in my firebase database but not appending.
+
 // I used the exercises in class as the template but I don't know what's the exact issue.
 
-     dataRef.ref().on("child_added", function(childSnapshot) {
-	
+dataRef.ref("traintime").on("child_added", function (childSnapshot) {
 
-		$('.train-schedule').append("<tr class='table-row' id=" + "'" + "'" + ">" +
-               "<td class='col-xs-3'>" + childSnapshot.val().name +
-               "</td>" +
-               "<td class='col-xs-2'>" + childSnapshot.val().destination +
-               "</td>" +
-               "<td class='col-xs-2'>" + childSnapshot.val().frequency +
-               "</td>" +
-               "<td class='col-xs-2'>" + childSnapshot.val().nextTrainFormatted + 
-               "</td>" +
-               "<td class='col-xs-2'>" + childSnapshot.val().minutesTillTrain + 
-               "</td>" +
-               "<td class='col-xs-1'>" + "<input type='submit' value='remove train' class='remove-train btn btn-primary btn-sm'>" + "</td>" +
-          "</tr>");
-// Handle the errors
-}, function(errorObject){
-	//console.log("Errors handled: " + errorObject.code)
+    var trainTimeKeep = childSnapshot.val();
+    frequency = trainTimeKeep.frequency;
+
+    var currentTime = moment();
+    var trainDetail = moment(firstTrainTime, "hh:mm").subtract(1, "years");
+    var timeDiff = currentTime.diff(moment(trainDetail),
+        'minutes');
+    var parseNumb = parseInt(frequency)
+    console.log(typeof (parseNumb))
+    var timeRemaining = timeDiff % parseNumb
+    var minutesTillTrain = parseNumb - timeRemaining;
+    var parseNumber = parseInt(minutesTillTrain)
+    console.log(parseNumber);
+    console.log(typeof (minutesTillTrain))
+    var nextTrainTime = currentTime.add(minutesTillTrain, "minutes").format("LT");
+
+
+
+    $("#trainTable").append("<tr><td class='move'> " + childSnapshot.val().name + "</td>" + "<hr>" + "<td class='move'>" + childSnapshot.val().destination + "</td>" + " <td class='move'>" + frequency + "</td>" + "<td class='move'>" + nextTrainTime + "</td> " + "<td>" + minutesTillTrain + "</td> </tr>");
+
+
+
+
+
+
+    // Handle the errors
+}, function (errorObject) {
+    console.log("Errors handled: " + errorObject.code)
 });
 
-$("body").on("click", ".remove-train", function(){
-     $(this).closest ('tr').remove();
-     getKey = $(this).parent().parent().attr('id');
-     dataRef.ref().child(getKey).remove();
-});
 
-}); // Closes jQuery wrapper
+
