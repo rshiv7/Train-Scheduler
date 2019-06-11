@@ -29,3 +29,7 @@ table {
 #name,#destination,#first-train,#frequency{
     color: white;
 }
+
+#traintable{
+    color: white;
+}

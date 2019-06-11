@@ -77,7 +77,7 @@ dataRef.ref("traintime").on("child_added", function (childSnapshot) {
 
 
 
-    $("#trainTable").append("<tr><td class='move'> " + childSnapshot.val().name + "</td>" + "<hr>" + "<td class='move'>" + childSnapshot.val().destination + "</td>" + " <td class='move'>" + frequency + "</td>" + "<td class='move'>" + nextTrainTime + "</td> " + "<td>" + minutesTillTrain + "</td> </tr>");
+    $("#traintable").append("<tr><td class='move'> " + childSnapshot.val().name + "</td>" + "<hr>" + "<td class='move'>" + childSnapshot.val().destination + "</td>" + " <td class='move'>" + frequency + "</td>" + "<td class='move'>" + nextTrainTime + "</td> " + "<td>" + minutesTillTrain + "</td> </tr>");
 
 
 
